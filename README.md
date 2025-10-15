@@ -17,29 +17,23 @@ Devido às limitações de sensores agrícolas no Wokwi, foram utilizadas substi
 | Sensor de Umidade do Solo | Sensor DHT22 (Umidade do Ar) | PIN 26 | Digital (Leitura de Umidade em %) |
 | Bomba D'água | Relé Azul | PIN 25 | Saída Digital (HIGH/LOW) |
 
-**[ANEXAR IMAGEM DO CIRCUITO AQUI]**
-*(Recomendação: Hospede a imagem no GitHub e use o link `![Circuito Wokwi](link_da_imagem_no_github.png)`)*
+Imagem do ESP32:
+(https://github.com/barzon1/Ativ-Fiap---Fase-2---Wokwi/blob/main/imagem-wokwi.jpg)
 
 ## 3. Lógica de Decisão para a Cultura do Feijão
 
 A cultura do Feijão (variedade escolhida para esta simulação) possui requisitos específicos de solo que determinam a necessidade de irrigação. Os parâmetros e limiares definidos no código C/C++ são:
 
 | Parâmetro | Faixa de Referência | Limiares no Código |
-| :--- | :--- | :--- |
 | **Umidade do Solo** | Nível Crítico | `UMIDADE_MINIMA = 60` (Irrigar se $\leq 60\%$) |
 | **pH (LDR)** | Ideal/Neutro | $\text{LDR} \geq 400$ e $\text{LDR} \leq 700$ (Valor analógico) |
 | **Nutrientes (N, P, K)** | Nível Baixo | Botão **NÃO** Pressionado (Leitura $HIGH$) |
 
 ---
 
-### **Regra Condicional para Irrigação (Relé LIGA):**
+### Regra Condicional para Irrigação (Relé LIGA):
 
-A Bomba D'água (Relé Azul) **LIGA** se a umidade do solo estiver **ABAIXO DE 60%** E, ao mesmo tempo, houver alguma desregulação no solo:
-
-$$
-\text{Irrigação} = \text{LIGA} \quad \text{SE} \quad (\text{Umidade} \leq 60) \quad \mathbf{\text{E}} \quad \left[ \begin{array}{l} (\text{pH\_LDR} < 400 \quad \mathbf{\text{OU}} \quad \text{pH\_LDR} > 700) \quad \mathbf{\text{OU}} \\ (\text{N} = \text{BAIXO}) \quad \mathbf{\text{OU}} \quad (\text{P} = \text{BAIXO}) \quad \mathbf{\text{OU}} \quad (\text{K} = \text{BAIXO}) \end{array} \right]
-$$
-
+A Bomba D'água (Relé Azul) **LIGA** se a umidade do solo estiver **ABAIXO DE 60%** E, ao mesmo tempo, houver alguma desregulação no solo.
 O relé **DESLIGA** imediatamente caso a umidade retorne para $\text{Umidade} > 60\%$ (indicando que a água foi reposta) ou se todas as condições de pH e nutrientes forem corrigidas.
 
 ---
@@ -49,5 +43,4 @@ O relé **DESLIGA** imediatamente caso a umidade retorne para $\text{Umidade} > 
 O código utiliza o recurso `INPUT_PULLUP` para simplificar a leitura dos botões (N, P, K). A leitura padrão é $HIGH$ (nível **BAIXO** de nutriente) e se torna $LOW$ quando pressionado (nível **ALTO** de nutriente). A leitura analógica do LDR (pH) e a leitura digital do DHT22 (Umidade) são os dados principais para a lógica de decisão, implementada na função `loop()`.
 
 ## 5. Vídeo de Demonstração
-
 [Link para o Vídeo de Demonstração no YouTube]
